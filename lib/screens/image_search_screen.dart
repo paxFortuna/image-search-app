@@ -13,7 +13,7 @@ class ImageSearchApp extends StatelessWidget {
     // ../data.dart;
     String jsonString = images;
     Map<String, dynamic> json = jsonDecode(jsonString);
-    List hits = json['hits'];
+    List<dynamic> hits = json['hits'];
     return hits.map((e) => Photo.fromJson(e)).toList();
   }
 
@@ -64,18 +64,16 @@ class ImageSearchApp extends StatelessWidget {
                       );
                     }
 
-                    final images = snapshot.data!;
+                    final List<Photo> images = snapshot.data!;
 
-                    return GridView.builder(
-                      itemCount: images.length,
+                    return GridView(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10,
                       ),
-                      itemBuilder: (BuildContext context, int index) {
-                        Photo image = images[index];
+                      children: images.map((Photo image) {
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Image.network(
@@ -83,7 +81,7 @@ class ImageSearchApp extends StatelessWidget {
                             fit: BoxFit.cover,
                           ),
                         );
-                      },
+                      }).toList(),
                     );
                   }),
             ),

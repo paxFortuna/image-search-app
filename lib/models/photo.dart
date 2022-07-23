@@ -12,5 +12,11 @@ class Photo {
       previewURL: json['previewURL'] as String,
       tags: json['tags'] as String,
     );
+
+  }
+
+  @override
+  String toString() {
+    return 'Photo{previewURL: $previewURL, tags: $tags}';
   }
 }
