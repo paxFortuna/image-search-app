@@ -5,35 +5,16 @@ import 'package:image_search_app/models/photo.dart';
 
 import '../data.dart';
 
-class ImageSearchApp extends StatefulWidget {
+class ImageSearchApp extends StatelessWidget {
   const ImageSearchApp({Key? key}) : super(key: key);
-
-  @override
-  State<ImageSearchApp> createState() => _ImageSearchAppState();
-}
-
-class _ImageSearchAppState extends State<ImageSearchApp> {
-  List<Photo> _images = [];
 
   Future<List<Photo>> getImage() async {
     await Future.delayed(const Duration(seconds: 2));
     // ../data.dart;
     String jsonString = images;
     Map<String, dynamic> json = jsonDecode(jsonString);
-    Iterable hits = json['hits'];
+    List hits = json['hits'];
     return hits.map((e) => Photo.fromJson(e)).toList();
-  }
-
-  Future initData() async {
-    _images = await getImage();
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    initData();
   }
 
   @override
@@ -64,10 +45,29 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: _images.isEmpty
-                  ? const Center(child: CircularProgressIndicator())
-                  : GridView.builder(
-                      itemCount: _images.length,
+              child: FutureBuilder<List<Photo>>(
+                  future: getImage(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Text('에러가 발생했습니다'),
+                      );
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: Text('데이터가 없습니다'),
+                      );
+                    }
+
+                    final images = snapshot.data!;
+
+                    return GridView.builder(
+                      itemCount: images.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
@@ -75,7 +75,7 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
                         crossAxisSpacing: 10,
                       ),
                       itemBuilder: (BuildContext context, int index) {
-                        Photo image = _images[index];
+                        Photo image = images[index];
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Image.network(
@@ -84,7 +84,8 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
                           ),
                         );
                       },
-                    ),
+                    );
+                  }),
             ),
           ),
         ],
