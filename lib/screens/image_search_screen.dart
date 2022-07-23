@@ -2,16 +2,34 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:image_search_app/models/photo.dart';
+import 'package:http/http.dart' as http;
 
-import '../data.dart';
-
-class ImageSearchApp extends StatelessWidget {
+class ImageSearchApp extends StatefulWidget {
   const ImageSearchApp({Key? key}) : super(key: key);
 
-  Future<List<Photo>> getImage() async {
-    await Future.delayed(const Duration(seconds: 2));
-    // ../data.dart;
-    String jsonString = images;
+  @override
+  State<ImageSearchApp> createState() => _ImageSearchAppState();
+}
+
+class _ImageSearchAppState extends State<ImageSearchApp> {
+
+  final _controller = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose(){
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<List<Photo>> getImage(String query) async {
+    Uri url = Uri.parse(
+        'https://pixabay.com/api'
+            '/?key=26655862-d25160d651ed15b14be08cf35&q=apple&image_type=photo');
+    http.Response response = await http.get(url);
+    print('Response status: ${response.statusCode}');
+
+    String jsonString = response.body;
     Map<String, dynamic> json = jsonDecode(jsonString);
     List<dynamic> hits = json['hits'];
     return hits.map((e) => Photo.fromJson(e)).toList();
@@ -29,15 +47,22 @@ class ImageSearchApp extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
+                enabledBorder: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   borderSide: BorderSide(color: Colors.blue, width: 2),
                 ),
-                suffixIcon: Icon(Icons.search),
+                suffixIcon: GestureDetector(
+                  onTap: (){
+                    setState((){
+                      _query = _controller.text;
+                    });
+                  },
+                    child: const Icon(Icons.search),),
                 hintText: '검색어를 입력하세요',
               ),
             ),
@@ -46,7 +71,7 @@ class ImageSearchApp extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: FutureBuilder<List<Photo>>(
-                  future: getImage(),
+                  future: getImage(_query),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return const Center(
@@ -68,12 +93,14 @@ class ImageSearchApp extends StatelessWidget {
 
                     return GridView(
                       gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
+                      const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10,
                       ),
-                      children: images.map((Photo image) {
+                      children: images
+                          .where((e) => e.tags.contains(_query))
+                          .map((Photo image) {
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Image.network(
