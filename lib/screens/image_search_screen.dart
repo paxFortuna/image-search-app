@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:image_search_app/models/photo.dart';
-import '../data_map.dart';
+
+import '../data.dart';
 
 class ImageSearchApp extends StatefulWidget {
   const ImageSearchApp({Key? key}) : super(key: key);
@@ -14,20 +17,11 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
 
   Future<List<Photo>> getImage() async {
     await Future.delayed(const Duration(seconds: 2));
-
-    List<Map<String, dynamic>> hits = images['hits'];
-
-    List<Photo> results = [];
-
-    for (int i = 0; i < hits.length; i++) {
-      Map<String, dynamic> item = hits[i];
-
-      Photo photos = Photo.fromJson(item);
-
-      results.add(photos);
-    }
-
-    return results;
+    // ../data.dart;
+    String jsonString = images;
+    Map<String, dynamic> json = jsonDecode(jsonString);
+    Iterable hits = json['hits'];
+    return hits.map((e) => Photo.fromJson(e)).toList();
   }
 
   Future initData() async {
