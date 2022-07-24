@@ -13,7 +13,6 @@ class ImageSearchApp extends StatefulWidget {
 }
 
 class _ImageSearchAppState extends State<ImageSearchApp> {
-
   final _controller = TextEditingController();
   String _query = '';
 
@@ -29,7 +28,7 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   }
 
   @override
-  void dispose(){
+  void dispose() {
     _controller.dispose();
     super.dispose();
   }
@@ -56,14 +55,15 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
                   borderSide: BorderSide(color: Colors.blue, width: 2),
                 ),
                 suffixIcon: GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     // 키보드 닫기 이벤트 처리
                     FocusManager.instance.primaryFocus?.unfocus();
-                    setState((){
+                    setState(() {
                       _query = _controller.text;
                     });
                   },
-                    child: const Icon(Icons.search),),
+                  child: const Icon(Icons.search),
+                ),
                 hintText: '검색어를 입력하세요',
               ),
             ),
@@ -94,7 +94,7 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
 
                     return GridView(
                       gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10,
@@ -102,11 +102,37 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
                       children: images
                           .where((e) => e.tags.contains(_query))
                           .map((Photo image) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.network(
-                            image.previewURL,
-                            fit: BoxFit.cover,
+                        return SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                  image.previewURL,
+                                  width: 150,
+                                  height: 120,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                child: Text(
+                                  'ID : ${image.id.toString()}',
+                                  style: const TextStyle(fontSize: 13),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                child: Text(
+                                  'Tags : ${image.tags}',
+                                  style: const TextStyle(fontSize: 13),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       }).toList(),
