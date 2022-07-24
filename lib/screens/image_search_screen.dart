@@ -60,6 +60,7 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
                     FocusManager.instance.primaryFocus?.unfocus();
                     setState(() {
                       _query = _controller.text;
+                      _controller.clear();
                     });
                   },
                   child: const Icon(Icons.search),
