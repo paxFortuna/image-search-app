@@ -42,7 +42,7 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
           borderSide: BorderSide(color: Colors.blue, width: 2),
         ),
         // TextField height 설정과 borderLine 유지하기
-        contentPadding: const EdgeInsets.fromLTRB(12, 1, 0, 1),
+        contentPadding: const EdgeInsets.fromLTRB(12.0, 0.5, 0.0, 0.5),
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),
           borderSide: BorderSide(color: Colors.blue, width: 2),
@@ -152,7 +152,7 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(8, 15, 5, 8),
             child: _genTextField(),
           ),
           Expanded(
