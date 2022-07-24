@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:image_search_app/fetch.dart';
 import 'package:image_search_app/models/photo.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 
 class ImageSearchApp extends StatefulWidget {
   const ImageSearchApp({Key? key}) : super(key: key);
@@ -17,23 +18,20 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   String _query = '';
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initData();
+  }
+
+  void initData() async {
+    await getImage(_query);
+  }
+
+  @override
   void dispose(){
     _controller.dispose();
     super.dispose();
-  }
-
-  Future<List<Photo>> getImage(String query) async {
-    // url search-query refactoring
-    Uri url = Uri.parse(
-        'https://pixabay.com/api/?key=26655862-d25160d651ed15b14be08cf35&q'
-            '=$query&image_type=photo');
-    http.Response response = await http.get(url);
-    print('Response status: ${response.statusCode}');
-
-    String jsonString = response.body;
-    Map<String, dynamic> json = jsonDecode(jsonString);
-    List<dynamic> hits = json['hits'];
-    return hits.map((e) => Photo.fromJson(e)).toList();
   }
 
   @override
@@ -59,6 +57,8 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
                 ),
                 suffixIcon: GestureDetector(
                   onTap: (){
+                    // 키보드 닫기 이벤트 처리
+                    FocusManager.instance.primaryFocus?.unfocus();
                     setState((){
                       _query = _controller.text;
                     });
