@@ -20,6 +20,6 @@ class Photo {
 
   @override
   String toString() {
-    return 'Photo{previewURL: $previewURL, tags: $tags}';
+    return 'Photo{id: $id, previewURL: $previewURL, tags: $tags}';
   }
 }
