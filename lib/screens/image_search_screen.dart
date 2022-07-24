@@ -110,7 +110,7 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
                                 borderRadius: BorderRadius.circular(20),
                                 child: Image.network(
                                   image.previewURL,
-                                  width: 150,
+                                  width: MediaQuery.of(context).size.width,
                                   height: 120,
                                   fit: BoxFit.cover,
                                 ),
