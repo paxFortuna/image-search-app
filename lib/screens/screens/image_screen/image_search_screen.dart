@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_search_app/fetch_api/photo_api.dart';
 import 'package:image_search_app/models/photo.dart';
+import 'package:image_search_app/theme.dart';
 // import 'package:http/http.dart' as http;
 
 class ImageSearchApp extends StatefulWidget {
@@ -28,15 +29,21 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
     return TextField(
       controller: _controller,
       decoration: InputDecoration(
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.secondary,
+            width: 2,
+          ),
         ),
         // TextField height 설정과 borderLine 유지하기
         contentPadding: const EdgeInsets.fromLTRB(12.0, 0.5, 0.0, 0.5),
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.secondary,
+            width: 2,
+          ),
         ),
         suffixIcon: GestureDetector(
           onTap: () {
@@ -81,17 +88,22 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   }
 
   Widget _genGridView(List<Photo> images) {
-    return GridView(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-      ),
-      children: images.where((e) => e.tags.contains(_query)).map((Photo image) {
-        return SingleChildScrollView(
-          child: _genPhotoData(image),
+    return Center(
+      child: Builder(builder: (BuildContext context) {
+        final orientation = MediaQuery.of(context).orientation;
+        return GridView(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
+            crossAxisSpacing: 10,
+          ),
+          children:
+              images.where((e) => e.tags.contains(_query)).map((Photo image) {
+            return SingleChildScrollView(
+              child: _genPhotoData(image),
+            );
+          }).toList(),
         );
-      }).toList(),
+      }),
     );
   }
 
@@ -103,7 +115,7 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
           borderRadius: BorderRadius.circular(20),
           child: Image.network(
             image.previewURL,
-            width: MediaQuery.of(context).size.width,
+            width: 150,
             height: 120,
             fit: BoxFit.cover,
           ),
@@ -113,14 +125,14 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Text(
             'ID : ${image.id.toString()}',
-            style: const TextStyle(fontSize: 13),
+            style: textTheme().bodyText2,
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Text(
             'Tags : ${image.tags}',
-            style: const TextStyle(fontSize: 13),
+            style: textTheme().bodyText2,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -156,5 +168,4 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
       ),
     );
   }
-
 }

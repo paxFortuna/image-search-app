@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_search_app/fetch_api/video_api.dart';
 import 'package:image_search_app/models/video.dart';
-import 'package:image_search_app/screens/screens/video_screen/video_player_screen/video_screen.dart';
+import 'package:image_search_app/screens/screens/video_screen/video_player_screen/video_player_screen.dart';
+import 'package:image_search_app/theme.dart';
+
+import 'components/video_thumbnail.dart';
 
 class VideoSearchApp extends StatefulWidget {
   const VideoSearchApp({Key? key}) : super(key: key);
@@ -55,14 +58,14 @@ class _VideoSearchAppState extends State<VideoSearchApp> {
     return FutureBuilder<List<Video>>(
         future: _videoApi.getVideos(_videoQuery),
         builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
           if (snapshot.hasError) {
             return const Center(
               child: Text('에러가 발생했습니다'),
             );
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
           }
 
           if (!snapshot.hasData) {
@@ -78,77 +81,34 @@ class _VideoSearchAppState extends State<VideoSearchApp> {
   }
 
   Widget _genGridView(List<Video> videos) {
-    return GridView(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-      ),
-      children:
-          videos.where((e) => e.tags.contains(_videoQuery)).map((Video video) {
-        return SingleChildScrollView(
-          child: _genVideoData(video),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _genVideoData(Video video) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Stack(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                'https://i.vimeocdn.com/video/${video.videoId}_${200 * 150}.jpg',
-                // 'https://pixabay.com/api/videos/${video.videoId}_${200 * 150}.jpg',
-                fit: BoxFit.cover,
-              ),
+    return Center(
+      child: Builder(
+        builder: (BuildContext context) {
+          final orientation = MediaQuery.of(context).orientation;
+          return GridView(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
             ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        VideoPlayScreen(video: video.videos.large['url']),
+            children: videos
+                .map(
+                  (Video video) => GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VideoPlayScreen(video: video),
+                        ),
+                      );
+                    },
+                    child: VideoThumbnail(video: video),
                   ),
-                );
-              },
-              child: Positioned(
-                left: 85,
-                top: 60,
-                right: 0,
-                bottom: 0,
-                width: 20,
-                height: 20,
-                child: CircleAvatar(
-                  backgroundImage: Image.asset("assets/lottoWheel.png").image,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 5),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Text(
-            'ID : ${video.videoId}',
-            style: const TextStyle(fontSize: 12),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Text(
-            'Tags : ${video.tags}',
-            style: const TextStyle(fontSize: 12),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
+                )
+                .toList(),
+          );
+        },
+      ),
     );
   }
 
@@ -157,9 +117,9 @@ class _VideoSearchAppState extends State<VideoSearchApp> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white60,
-        title: const Text(
-          '이미지 검색 앱',
-          style: TextStyle(fontSize: 20, color: Colors.black, letterSpacing: 1),
+        title: Text(
+          '동영상 검색 앱',
+          style: textTheme().headline2,
         ),
         centerTitle: true,
       ),
