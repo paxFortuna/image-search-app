@@ -1,41 +1,29 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:image_search_app/fetch.dart';
-import 'package:image_search_app/models/photo.dart';
-// import 'package:http/http.dart' as http;
+import 'package:image_search_app/fetch_api/video_api.dart';
+import 'package:image_search_app/models/video.dart';
+import 'package:image_search_app/screens/screens/video_screen/video_player_screen/video_screen.dart';
 
-class ImageSearchApp extends StatefulWidget {
-  const ImageSearchApp({Key? key}) : super(key: key);
+class VideoSearchApp extends StatefulWidget {
+  const VideoSearchApp({Key? key}) : super(key: key);
 
   @override
-  State<ImageSearchApp> createState() => _ImageSearchAppState();
+  State<VideoSearchApp> createState() => _VideoSearchAppState();
 }
 
-class _ImageSearchAppState extends State<ImageSearchApp> {
-  final _controller = TextEditingController();
-  String _query = '';
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    initData();
-  }
-
-  void initData() async {
-    await getImage(_query);
-  }
+class _VideoSearchAppState extends State<VideoSearchApp> {
+  final _videoApi = VideoApi();
+  final _videoController = TextEditingController();
+  String _videoQuery = '';
 
   @override
   void dispose() {
-    _controller.dispose();
+    _videoController.dispose();
     super.dispose();
   }
 
   Widget _genTextField() {
     return TextField(
-      controller: _controller,
+      controller: _videoController,
       decoration: InputDecoration(
         enabledBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -52,8 +40,8 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
             // 키보드 닫기 이벤트 처리
             FocusManager.instance.primaryFocus?.unfocus();
             setState(() {
-              _query = _controller.text;
-              _controller.clear();
+              _videoQuery = _videoController.text;
+              _videoController.clear();
             });
           },
           child: const Icon(Icons.search),
@@ -64,8 +52,8 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   }
 
   Widget _genFutureBuild() {
-    return FutureBuilder<List<Photo>>(
-        future: getImage(_query),
+    return FutureBuilder<List<Video>>(
+        future: _videoApi.getVideos(_videoQuery),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(
@@ -83,53 +71,79 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
             );
           }
 
-          final List<Photo> images = snapshot.data!;
+          final List<Video> videos = snapshot.data!;
 
-          return _genGridView(images);
+          return _genGridView(videos);
         });
   }
 
-  Widget _genGridView(List<Photo> images) {
+  Widget _genGridView(List<Video> videos) {
     return GridView(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
       ),
-      children: images.where((e) => e.tags.contains(_query)).map((Photo image) {
+      children:
+          videos.where((e) => e.tags.contains(_videoQuery)).map((Video video) {
         return SingleChildScrollView(
-          child: _genPhotoData(image),
+          child: _genVideoData(video),
         );
       }).toList(),
     );
   }
 
-  Widget _genPhotoData(Photo image) {
+  Widget _genVideoData(Video video) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Image.network(
-            image.previewURL,
-            width: MediaQuery.of(context).size.width,
-            height: 120,
-            fit: BoxFit.cover,
-          ),
+        Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.network(
+                // 'https://i.vimeocdn.com/video/${video.videoId}_${200 * 150}.jpg',
+                'https://pixabay.com/api/videos/${video.videoId}_${200 * 150}.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        VideoPlayScreen(video: video.videos.large['url']),
+                  ),
+                );
+              },
+              child: Positioned(
+                left: 85,
+                top: 60,
+                right: 0,
+                bottom: 0,
+                width: 20,
+                height: 20,
+                child: CircleAvatar(
+                  backgroundImage: Image.asset("assets/lottoWheel.png").image,
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 5),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Text(
-            'ID : ${image.id.toString()}',
-            style: const TextStyle(fontSize: 13),
+            'ID : ${video.videoId}',
+            style: const TextStyle(fontSize: 12),
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Text(
-            'Tags : ${image.tags}',
-            style: const TextStyle(fontSize: 13),
+            'Tags : ${video.tags}',
+            style: const TextStyle(fontSize: 12),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -144,7 +158,7 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
       appBar: AppBar(
         backgroundColor: Colors.white60,
         title: const Text(
-          'Photos by Pixabay',
+          '이미지 검색 앱',
           style: TextStyle(fontSize: 20, color: Colors.black, letterSpacing: 1),
         ),
         centerTitle: true,
@@ -165,5 +179,4 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
       ),
     );
   }
-
 }

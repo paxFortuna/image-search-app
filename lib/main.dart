@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_search_app/screens/image_search_screen.dart';
+import 'package:image_search_app/screens/main_screen.dart';
+import 'package:image_search_app/screens/screens/image_screen/image_search_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
                                                                                 primarySwatch: Colors.blue,
       ),
-      home: const ImageSearchApp(),
+      home: const MainScreen(),
     );
   }
 }
