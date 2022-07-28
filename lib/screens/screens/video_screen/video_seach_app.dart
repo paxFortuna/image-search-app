@@ -102,8 +102,8 @@ class _VideoSearchAppState extends State<VideoSearchApp> {
             ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Image.network(
-                // 'https://i.vimeocdn.com/video/${video.videoId}_${200 * 150}.jpg',
-                'https://pixabay.com/api/videos/${video.videoId}_${200 * 150}.jpg',
+                'https://i.vimeocdn.com/video/${video.videoId}_${200 * 150}.jpg',
+                // 'https://pixabay.com/api/videos/${video.videoId}_${200 * 150}.jpg',
                 fit: BoxFit.cover,
               ),
             ),
