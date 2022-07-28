@@ -21,8 +21,8 @@ class Video {
 
 class Videos {
   final large;
-  final Map<String, dynamic> medium;
-  final Map<String, dynamic> small;
+  final medium;
+  final small;
 
   Videos({
     required this.large,
@@ -33,20 +33,31 @@ class Videos {
   factory Videos.fromJson(Map<String, dynamic> json) {
     return Videos(
       large: Large.fromJson(json['large']),
-      medium: json['medium'] as Map<String, dynamic>,
-      small: json['small'] as Map<String, dynamic>,
+      medium: Medium.fromJson(json['medium']),
+      small: Small.fromJson(json['small']),
     );
   }
 }
-
 class Large {
   final String url;
+  Large({required this.url});
+  factory Large.fromJson(Map<String, dynamic> json) => Large(
+    url: json['url'] as String,
+  );
+}
 
-  Large({
-    required this.url,
-  });
+class Medium {
+  final String url;
+  Medium({required this.url});
+  factory Medium.fromJson(Map<String, dynamic> json) => Medium(
+    url: json['url'] as String,
+  );
+}
 
-  factory Large.fromJson(Map<String, dynamic> json)=> Large(
+class Small {
+  final String url;
+  Small({required this.url});
+  factory Small.fromJson(Map<String, dynamic> json) => Small(
     url: json['url'] as String,
   );
 }

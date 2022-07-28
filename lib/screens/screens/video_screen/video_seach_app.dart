@@ -56,59 +56,53 @@ class _VideoSearchAppState extends State<VideoSearchApp> {
 
   Widget _genFutureBuild() {
     return FutureBuilder<List<Video>>(
-        future: _videoApi.getVideos(_videoQuery),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      future: _videoApi.getVideos(_videoQuery),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text('에러가 발생했습니다'),
-            );
-          }
+        if (snapshot.hasError) {
+          return const Center(
+            child: Text('에러가 발생했습니다'),
+          );
+        }
 
-          if (!snapshot.hasData) {
-            return const Center(
-              child: Text('데이터가 없습니다'),
-            );
-          }
+        if (!snapshot.hasData) {
+          return const Center(
+            child: Text('데이터가 없습니다'),
+          );
+        }
 
-          final List<Video> videos = snapshot.data!;
+        final List<Video> videos = snapshot.data!;
 
-          return _genGridView(videos);
-        });
+        return _genGridView(videos);
+      },
+    );
   }
 
   Widget _genGridView(List<Video> videos) {
-    return Center(
-      child: Builder(
-        builder: (BuildContext context) {
-          final orientation = MediaQuery.of(context).orientation;
-          return GridView(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-            ),
-            children: videos
-                .map(
-                  (Video video) => GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => VideoPlayScreen(video: video),
-                        ),
-                      );
-                    },
-                    child: VideoThumbnail(video: video),
-                  ),
-                )
-                .toList(),
-          );
-        },
+    return GridView(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
       ),
+      children: videos
+          .map(
+            (Video video) => GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VideoPlayScreen(video: video),
+                  ),
+                );
+              },
+              child: VideoThumbnail(video: video),
+            ),
+          )
+          .toList(),
     );
   }
 

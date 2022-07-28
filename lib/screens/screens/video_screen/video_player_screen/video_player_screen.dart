@@ -17,7 +17,8 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.video.videos.large.url);
+    _controller = VideoPlayerController
+        .network(widget.video.videos.large.url);
   }
 
   @override
@@ -29,7 +30,6 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
           return AspectRatio(
             aspectRatio: _controller.value.aspectRatio,
             // Use the VideoPlayer widget to display the video.
