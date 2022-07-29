@@ -88,16 +88,24 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   }
 
   Widget _genGridView(List<Photo> images) {
-    return GridView(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 10,
+    return Expanded(
+      child: Center(
+        child: Builder(builder: (BuildContext inContext) {
+          final orientation = MediaQuery.of(inContext).orientation;
+          return GridView(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
+              crossAxisSpacing: 10,
+            ),
+            children:
+                images.where((e) => e.tags.contains(_query)).map((Photo image) {
+              return SingleChildScrollView(
+                child: _genPhotoData(image),
+              );
+            }).toList(),
+          );
+        }),
       ),
-      children: images.where((e) => e.tags.contains(_query)).map((Photo image) {
-        return SingleChildScrollView(
-          child: _genPhotoData(image),
-        );
-      }).toList(),
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:image_search_app/color_schemes.g.dart';
+import 'package:image_search_app/screens/screens/video_screen/components/contents/video_content.dart';
 import '../../../../models/video.dart';
 
 class VideoThumbnail extends StatelessWidget {
@@ -22,7 +23,21 @@ class VideoThumbnail extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        const Icon(Icons.play_circle),
+        const Positioned(
+          left: 0,
+          top: 0,
+          right: 0,
+          bottom: 0,
+          child: Icon(
+            Icons.play_circle,
+            size: 40,
+            color: Colors.red,
+          ),
+        ),
+        Positioned(
+          left: 5,
+            bottom: 3,
+            child: VideoContent(video: video)),
       ],
     );
   }

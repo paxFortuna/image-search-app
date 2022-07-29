@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_search_app/screens/screens/image_screen/image_search_screen.dart';
-import 'package:image_search_app/screens/screens/video_screen/video_seach_app.dart';
+import 'package:image_search_app/screens/screens/video_screen/video_seach_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -31,7 +31,7 @@ class _MainScreenState extends State<MainScreen> {
       case 0:
         return const ImageSearchApp();
       case 1:
-        return const VideoSearchApp();
+        return const VideoSearchScreen();
       case 2:
         return const Center(child: Text("Pixabay"));
       case 3:

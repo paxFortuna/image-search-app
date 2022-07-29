@@ -9,6 +9,6 @@ TextTheme textTheme() {
     GoogleFonts.nanumGothic(fontSize: 16.0, fontWeight: FontWeight.bold),
     subtitle1: GoogleFonts.nanumGothic(fontSize: 16.0),
     bodyText1: GoogleFonts.nanumGothic(fontSize: 15.0),
-    bodyText2: GoogleFonts.nanumGothic(fontSize: 14.0),
+    bodyText2: GoogleFonts.nanumGothic(fontSize: 14.0, color: Colors.yellow),
   );
 }

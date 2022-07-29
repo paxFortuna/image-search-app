@@ -1,11 +1,19 @@
 class Video {
   final String thumbnail;
   final String tags;
+  final int likes;
+  final String userImageURL;
+  final int views;
+  final String user;
   final Videos videos;
 
   Video({
     required this.thumbnail,
     required this.tags,
+    required this.likes,
+    required this.userImageURL,
+    required this.views,
+    required this.user,
     required this.videos,
   });
 
@@ -14,6 +22,10 @@ class Video {
     return Video(
       thumbnail: 'https://i.vimeocdn.com/video/${videoId}_295x166.jpg',
       tags: json['tags'] as String,
+      likes: json['likes'] as int,
+      userImageURL: json['userImageURL'] as String,
+      views: json['views'] as int,
+      user: json['user'] as String,
       videos: Videos.fromJson(json['videos'] as Map<String, dynamic>),
     );
   }
