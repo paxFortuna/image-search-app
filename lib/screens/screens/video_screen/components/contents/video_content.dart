@@ -16,14 +16,14 @@ class VideoContent extends StatelessWidget {
         children: [
           Text(
             'Tag: ${video.tags}',
-            style: textTheme().bodyText2,
+            style: textTheme.bodyText2,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 3),
           Text(
             'Url: ${video.videos.large.url}',
-            style: textTheme().bodyText2,
+            style: textTheme.bodyText2,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

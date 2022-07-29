@@ -27,25 +27,41 @@ class _VideoSearchScreenState extends State<VideoSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final orientation = MediaQuery.of(context).orientation;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: TextField(
-          controller: _controller,
-          decoration: InputDecoration(
-            enabledBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(color: Colors.blue, width: 2),
+        title: Expanded(
+          child: TextField(
+            controller: _controller,
+            decoration: InputDecoration(
+              enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderSide: BorderSide(color: Colors.blue, width: 2),
+              ),// TextField height 설정과 borderLine 유지하기
+              contentPadding: const EdgeInsets.fromLTRB(12.0, 0.5, 0.0, 0.5),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.secondary,
+                  width: 2,
+                ),
+              ),
+              suffixIcon: GestureDetector(
+                onTap: () {
+                  // 키보드 닫기 이벤트 처리
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  setState(() {
+                    _videoQuery = _controller.text;
+                    _controller.clear();
+                  });
+                },
+                child: const Icon(Icons.search),
+              ),
+              hintText: '검색어를 입력하세요',
             ),
-            suffixIcon: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _videoQuery = _controller.text;
-                });
-              },
-              child: const Icon(Icons.search),
-            ),
-            hintText: '검색어를 입력하세요',
           ),
         ),
       ),
@@ -63,8 +79,8 @@ class _VideoSearchScreenState extends State<VideoSearchScreen> {
           final videos = snapshot.data!;
 
           return GridView(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
             ),

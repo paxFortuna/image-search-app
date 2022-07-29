@@ -32,9 +32,9 @@ class Video {
 }
 
 class Videos {
-  final large;
-  final medium;
-  final small;
+  final Large large;
+  final Medium medium;
+  final Small small;
 
   Videos({
     required this.large,

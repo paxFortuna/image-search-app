@@ -15,7 +15,7 @@ class VideoPlayContent extends StatelessWidget {
           padding: const EdgeInsets.only(left: 15.0),
           child: Text(
             'Copy from Gumsang_code^^',
-            style: textTheme().bodyText2,
+            style: textTheme.bodyText2,
           ),
         ),
         Padding(

@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:image_search_app/fetch_api/photo_api.dart';
 import 'package:image_search_app/models/photo.dart';
 import 'package:image_search_app/theme.dart';
-// import 'package:http/http.dart' as http;
 
 class ImageSearchApp extends StatefulWidget {
   const ImageSearchApp({Key? key}) : super(key: key);
@@ -26,37 +23,39 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   }
 
   Widget _genTextField() {
-    return TextField(
-      controller: _controller,
-      decoration: InputDecoration(
-        enabledBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
-          borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.secondary,
-            width: 2,
+    return Expanded(
+      child: TextField(
+        controller: _controller,
+        decoration: InputDecoration(
+          enabledBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.secondary,
+              width: 2,
+            ),
           ),
-        ),
-        // TextField height 설정과 borderLine 유지하기
-        contentPadding: const EdgeInsets.fromLTRB(12.0, 0.5, 0.0, 0.5),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
-          borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.secondary,
-            width: 2,
+          // TextField height 설정과 borderLine 유지하기
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 0.5, 0.0, 0.5),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.secondary,
+              width: 2,
+            ),
           ),
+          suffixIcon: GestureDetector(
+            onTap: () {
+              // 키보드 닫기 이벤트 처리
+              FocusManager.instance.primaryFocus?.unfocus();
+              setState(() {
+                _query = _controller.text;
+                _controller.clear();
+              });
+            },
+            child: const Icon(Icons.search),
+          ),
+          hintText: '검색어를 입력하세요',
         ),
-        suffixIcon: GestureDetector(
-          onTap: () {
-            // 키보드 닫기 이벤트 처리
-            FocusManager.instance.primaryFocus?.unfocus();
-            setState(() {
-              _query = _controller.text;
-              _controller.clear();
-            });
-          },
-          child: const Icon(Icons.search),
-        ),
-        hintText: '검색어를 입력하세요',
       ),
     );
   }
@@ -88,24 +87,22 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   }
 
   Widget _genGridView(List<Photo> images) {
-    return Expanded(
-      child: Center(
-        child: Builder(builder: (BuildContext inContext) {
-          final orientation = MediaQuery.of(inContext).orientation;
-          return GridView(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
-              crossAxisSpacing: 10,
-            ),
-            children:
-                images.where((e) => e.tags.contains(_query)).map((Photo image) {
-              return SingleChildScrollView(
-                child: _genPhotoData(image),
-              );
-            }).toList(),
-          );
-        }),
-      ),
+    return Center(
+      child: Builder(builder: (BuildContext context) {
+        final orientation = MediaQuery.of(context).orientation;
+        return GridView(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
+            crossAxisSpacing: 10,
+          ),
+          children:
+              images.where((e) => e.tags.contains(_query)).map((Photo image) {
+            return SingleChildScrollView(
+              child: _genPhotoData(image),
+            );
+          }).toList(),
+        );
+      }),
     );
   }
 
@@ -127,14 +124,14 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Text(
             'ID : ${image.id.toString()}',
-            style: textTheme().bodyText2,
+            style: textTheme.bodyText2,
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Text(
             'Tags : ${image.tags}',
-            style: textTheme().bodyText2,
+            style: textTheme.bodyText2,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
