@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_search_app/screens/screens/image_screen/image_search_screen.dart';
+import 'package:image_search_app/screens/screens/image_stream_screen/image_Stream_screen.dart';
 import 'package:image_search_app/screens/screens/video_screen/video_seach_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -33,7 +34,7 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         return const VideoSearchScreen();
       case 2:
-        return const Center(child: Text("Pixabay"));
+        return const ImageStreamScreen();
       case 3:
         return const Center(
           child: Text("Mbti"),
@@ -83,7 +84,7 @@ class _MainScreenState extends State<MainScreen> {
               Icons.chat_rounded,
               size: 22,
             ),
-            label: "Pixabay"),
+            label: "Stream"),
         BottomNavigationBarItem(
             icon: Icon(
               Icons.propane,

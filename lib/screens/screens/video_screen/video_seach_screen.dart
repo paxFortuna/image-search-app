@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:image_search_app/fetch_api/video_api.dart';
 import 'package:image_search_app/models/video.dart';
 import 'package:image_search_app/screens/screens/video_screen/video_player_screen/video_player_screen.dart';
-import 'package:image_search_app/theme.dart';
 
 import 'components/video_thumbnail.dart';
 
