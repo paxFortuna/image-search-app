@@ -14,21 +14,11 @@ class ImageStreamScreen extends StatefulWidget {
 class _ImageStreamScreenState extends State<ImageStreamScreen> {
 
   List<Photo> images = [];
-  final _photoStreamApi = PhotoStreamApi();
+  final _streamApi = PhotoStreamApi();
 
   final _controller = TextEditingController();
   String _query = '';
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   addStreamPhoto();
-  // }
-
-  // Future<List<Photo>> addStreamPhoto() async{
-  //   images = await _photoStreamApi.getStreamImage(_query) as List<Photo>;
-  //   return images;
-  // }
   @override
   void dispose() {
     _controller.dispose();
@@ -75,22 +65,22 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
 
   Widget _genStreamBuild() {
     return StreamBuilder<List<Photo>>(
+        stream: _streamApi.photoStream,
         initialData: images,
-        stream: _photoStreamApi.photoStream,
         builder: (context, snapshot) {
-          // if (snapshot.hasError) {
-          //   return const Center(
-          //     child: Text('에러가 발생했습니다'),
-          //   );
-          // }
-          // if (snapshot.connectionState == ConnectionState.waiting) {
-          //   return const Center(child: CircularProgressIndicator());
-          // }
-          // if (!snapshot.hasData) {
-          //   return const Center(
-          //     child: Text('데이터가 없습니다'),
-          //   );
-          // }
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text('에러가 발생했습니다'),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.hasData) {
+            return const Center(
+              child: Text('데이터가 없습니다'),
+            );
+          }
           final List<Photo> images = snapshot.data!;
 
           return _genGridView(images);

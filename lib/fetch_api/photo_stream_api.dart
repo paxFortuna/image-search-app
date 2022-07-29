@@ -6,7 +6,6 @@ import 'package:image_search_app/models/photo.dart';
 class PhotoStreamApi{
 
   final _photoStreamController = StreamController<List<Photo>>();
-
   Stream<List<Photo>> get photoStream => _photoStreamController.stream;
 
   Future<void> getStreamImage(String query) async {
@@ -19,8 +18,8 @@ class PhotoStreamApi{
     String jsonString = response.body;
     Map<String, dynamic> json = jsonDecode(jsonString);
     List<dynamic> hits = json['hits'];
-    List<Photo> images = hits.map((e) => Photo.fromJson(e)).toList();
-    _photoStreamController.add(images);
+    List<Photo> result = hits.map((e) => Photo.fromJson(e)).toList();
+    _photoStreamController.add(result);
   }
 }
 
