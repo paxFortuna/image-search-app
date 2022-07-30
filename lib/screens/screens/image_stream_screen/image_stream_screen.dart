@@ -36,27 +36,25 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
   }
  
   Widget _genTextField() {
-    return SingleChildScrollView(
-      child: TextField(
-        controller: _controller,
-        decoration:InputDecoration(
-          enabledBorder: _genOutInputer(),
-          // TextField height 설정과 borderLine 유지하기
-          contentPadding: const EdgeInsets.fromLTRB(12.0, 0.5, 0.0, 0.5),
-          focusedBorder: _genOutInputer(),
-          suffixIcon: GestureDetector(
-            onTap: () {
-              // 키보드 닫기 이벤트 처리
-              FocusManager.instance.primaryFocus?.unfocus();
-              setState(() {
-                _query = _controller.text;
-                _controller.clear();
-              });
-            },
-            child: const Icon(Icons.search),
-          ),
-          hintText: '검색어를 입력하세요',
+    return TextField(
+      controller: _controller,
+      decoration:InputDecoration(
+        enabledBorder: _genOutInputer(),
+        // TextField height 설정과 borderLine 유지하기
+        contentPadding: const EdgeInsets.fromLTRB(12.0, 0.5, 0.0, 0.5),
+        focusedBorder: _genOutInputer(),
+        suffixIcon: GestureDetector(
+          onTap: () {
+            // 키보드 닫기 이벤트 처리
+            FocusManager.instance.primaryFocus?.unfocus();
+            setState(() {
+              _query = _controller.text;
+              _controller.clear();
+            });
+          },
+          child: const Icon(Icons.search),
         ),
+        hintText: '검색어를 입력하세요',
       ),
     );
   }
@@ -111,18 +109,20 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
         }).toList(),
       );
   }
-
+  // Expanded : renderFlex 유발 주의
   Widget _genPhotoData(Photo image) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Image.network(
-            image.previewURL,
-            // width: 150,
-            height: 120,
-            fit: BoxFit.cover,
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(
+              image.previewURL,
+              // width: 150,
+              height: 120,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
         const SizedBox(height: 5),
@@ -133,13 +133,15 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
             style: textTheme.bodyText2,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Text(
-            'Tags : ${image.tags}',
-            style: textTheme.bodyText2,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Text(
+              'Tags : ${image.tags}',
+              style: textTheme.bodyText2,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ),
       ],
