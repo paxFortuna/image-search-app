@@ -13,18 +13,28 @@ class ImageStreamScreen extends StatefulWidget {
 
 class _ImageStreamScreenState extends State<ImageStreamScreen> {
 
+
+  List<Photo>? initImage;
   List<Photo> images = [];
   final _streamApi = PhotoStreamApi();
-
   final _controller = TextEditingController();
   String _query = '';
 
+  @override
+  void initState() {
+    super.initState();
+    initData();
+  }
+
+  void initData () async{
+    initImage = await _streamApi.initStream();
+  }
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
+ 
   Widget _genTextField() {
     return Expanded(
       child: TextField(
@@ -63,7 +73,7 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
 
   Widget _genStreamBuild() {
     return StreamBuilder<List<Photo>>(
-        initialData: images,
+        initialData: initImage,
         stream: _streamApi.photoStream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -116,11 +126,13 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
           ),
         ),
         const SizedBox(height: 5),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Text(
-            'ID : ${image.id.toString()}',
-            style: textTheme.bodyText2,
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Text(
+              'ID : ${image.id.toString()}',
+              style: textTheme.bodyText2,
+            ),
           ),
         ),
         Padding(
@@ -150,21 +162,16 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
       // Expanded로 감싸야 renderFlex issue 제거됨!!
       body: Column(
         children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 15, 5, 8),
-              child: _genTextField(),
-            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 15, 5, 8),
+            child: _genTextField(),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _genStreamBuild(),
-              ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: _genStreamBuild(),
             ),
         ],
       ),
     );
   }
 }
-
