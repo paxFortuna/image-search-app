@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../../models/video.dart';
-import '../components/contents/video_play_content.dart';
+import '../components/video_contents/video_play_content.dart';
 
 class PlayVideoScreen extends StatefulWidget {
   final Video video;

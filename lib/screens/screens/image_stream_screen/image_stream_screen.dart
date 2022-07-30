@@ -29,23 +29,11 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
     return Expanded(
       child: TextField(
         controller: _controller,
-        decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.secondary,
-              width: 2,
-            ),
-          ),
+        decoration:InputDecoration(
+          enabledBorder: _genOutInputer(),
           // TextField height 설정과 borderLine 유지하기
           contentPadding: const EdgeInsets.fromLTRB(12.0, 0.5, 0.0, 0.5),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.secondary,
-              width: 2,
-            ),
-          ),
+          focusedBorder: _genOutInputer(),
           suffixIcon: GestureDetector(
             onTap: () {
               // 키보드 닫기 이벤트 처리
@@ -63,10 +51,20 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
     );
   }
 
+  OutlineInputBorder _genOutInputer() {
+    return OutlineInputBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+      borderSide: BorderSide(
+        color: Theme.of(context).colorScheme.secondary,
+        width: 2,
+      ),
+    );
+  }
+
   Widget _genStreamBuild() {
     return StreamBuilder<List<Photo>>(
-        stream: _streamApi.photoStream,
         initialData: images,
+        stream: _streamApi.photoStream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(
@@ -83,28 +81,25 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
           }
           final List<Photo> images = snapshot.data!;
 
-          return _genGridView(images);
+          return _genGridView(images, context);
         });
   }
-
-  Widget _genGridView(List<Photo> images) {
-    return Center(
-      child: Builder(builder: (BuildContext context) {
-        final orientation = MediaQuery.of(context).orientation;
-        return GridView(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
-            crossAxisSpacing: 10,
-          ),
-          children:
-          images.where((e) => e.tags.contains(_query)).map((Photo image) {
-            return SingleChildScrollView(
-              child: _genPhotoData(image),
-            );
-          }).toList(),
-        );
-      }),
-    );
+  // Builder Widget 사용 : 좋지 않은 선택
+  Widget _genGridView(List<Photo> images, BuildContext context) {
+      final orientation = MediaQuery.of(context).orientation;
+      return GridView(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
+          crossAxisSpacing: 10,
+        ),
+        children: images
+            .where((e) => e.tags.contains(_query))
+            .map((Photo image) {
+          return SingleChildScrollView(
+            child: _genPhotoData(image),
+          );
+        }).toList(),
+      );
   }
 
   Widget _genPhotoData(Photo image) {
@@ -152,11 +147,14 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
         ),
         centerTitle: true,
       ),
+      // Expanded로 감싸야 renderFlex issue 제거됨!!
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 15, 5, 8),
-            child: _genTextField(),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(8, 15, 5, 8),
+              child: _genTextField(),
+            ),
           ),
           Expanded(
             child: Padding(

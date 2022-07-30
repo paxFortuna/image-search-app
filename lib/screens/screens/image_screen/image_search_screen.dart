@@ -23,26 +23,14 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   }
 
   Widget _genTextField() {
-    return Expanded(
+    return SingleChildScrollView(
       child: TextField(
         controller: _controller,
         decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.secondary,
-              width: 2,
-            ),
-          ),
+          enabledBorder: _genOutLineInputer(),
           // TextField height 설정과 borderLine 유지하기
-          contentPadding: const EdgeInsets.fromLTRB(12.0, 0.5, 0.0, 0.5),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.secondary,
-              width: 2,
-            ),
-          ),
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 0.1, 0.0, 0.1),
+          focusedBorder: _genOutLineInputer(),
           suffixIcon: GestureDetector(
             onTap: () {
               // 키보드 닫기 이벤트 처리
@@ -95,8 +83,9 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
             crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
             crossAxisSpacing: 10,
           ),
-          children:
-              images.where((e) => e.tags.contains(_query)).map((Photo image) {
+          children: images
+              .where((e) => e.tags.contains(_query))
+              .map((Photo image) {
             return SingleChildScrollView(
               child: _genPhotoData(image),
             );
@@ -151,10 +140,12 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
         ),
         centerTitle: true,
       ),
+      // Column 아래 Padding 위에 Expanded로 감싸면 renderFlex issue 제거됨
+      // LandScape overflow: padding 상하 조절로 issue 제거됨
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(8, 15, 5, 8),
+            padding: const EdgeInsets.fromLTRB(8, 5, 5, 5),
             child: _genTextField(),
           ),
           Expanded(
@@ -164,6 +155,16 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  OutlineInputBorder _genOutLineInputer() {
+    return OutlineInputBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+      borderSide: BorderSide(
+        color: Theme.of(context).colorScheme.secondary,
+        width: 1,
       ),
     );
   }

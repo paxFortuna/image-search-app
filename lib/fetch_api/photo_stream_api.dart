@@ -18,8 +18,11 @@ class PhotoStreamApi{
     String jsonString = response.body;
     Map<String, dynamic> json = jsonDecode(jsonString);
     List<dynamic> hits = json['hits'];
-    List<Photo> result = hits.map((e) => Photo.fromJson(e)).toList();
-    _photoStreamController.add(result);
+
+    List<Photo> results = hits.map((e)
+        => Photo.fromJson(e)).toList();
+
+    _photoStreamController.add(results);
   }
 }
 

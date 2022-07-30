@@ -8,5 +8,5 @@ TextTheme textTheme = TextTheme(
     GoogleFonts.nanumGothic(fontSize: 16.0, fontWeight: FontWeight.bold),
     subtitle1: GoogleFonts.nanumGothic(fontSize: 16.0),
     bodyText1: GoogleFonts.nanumGothic(fontSize: 15.0),
-    bodyText2: GoogleFonts.nanumGothic(fontSize: 14.0, color: Colors.purple),
+    bodyText2: GoogleFonts.nanumGothic(fontSize: 12.0, color: Colors.purple),
   );

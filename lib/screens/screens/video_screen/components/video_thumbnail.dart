@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_search_app/color_schemes.g.dart';
-import 'package:image_search_app/screens/screens/video_screen/components/contents/video_content.dart';
+import 'package:image_search_app/screens/screens/video_screen/components/video_contents/video_content.dart';
 import '../../../../models/video.dart';
 
 class VideoThumbnail extends StatelessWidget {
@@ -36,8 +36,9 @@ class VideoThumbnail extends StatelessWidget {
         ),
         Positioned(
           left: 5,
-            bottom: 3,
-            child: VideoContent(video: video)),
+          bottom: 1,
+          child: VideoContent(video: video),
+        ),
       ],
     );
   }

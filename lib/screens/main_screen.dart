@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_search_app/screens/screens/image_screen/image_search_screen.dart';
-import 'package:image_search_app/screens/screens/image_stream_screen/image_Stream_screen.dart';
+import 'package:image_search_app/screens/screens/image_stream_screen/image_stream_screen.dart';
 import 'package:image_search_app/screens/screens/video_screen/video_seach_screen.dart';
 
 class MainScreen extends StatefulWidget {
