@@ -36,7 +36,7 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
   }
  
   Widget _genTextField() {
-    return Expanded(
+    return SingleChildScrollView(
       child: TextField(
         controller: _controller,
         decoration:InputDecoration(
@@ -126,13 +126,11 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
           ),
         ),
         const SizedBox(height: 5),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Text(
-              'ID : ${image.id.toString()}',
-              style: textTheme.bodyText2,
-            ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Text(
+            'ID : ${image.id.toString()}',
+            style: textTheme.bodyText2,
           ),
         ),
         Padding(
@@ -166,10 +164,12 @@ class _ImageStreamScreenState extends State<ImageStreamScreen> {
             padding: const EdgeInsets.fromLTRB(8, 15, 5, 8),
             child: _genTextField(),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: _genStreamBuild(),
-            ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _genStreamBuild(),
+              ),
+          ),
         ],
       ),
     );

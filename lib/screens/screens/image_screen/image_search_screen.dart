@@ -48,6 +48,16 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
     );
   }
 
+  OutlineInputBorder _genOutLineInputer() {
+    return OutlineInputBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+      borderSide: BorderSide(
+        color: Theme.of(context).colorScheme.secondary,
+        width: 1,
+      ),
+    );
+  }
+
   Widget _genFutureBuild() {
     return FutureBuilder<List<Photo>>(
         future: _photoApi.getImage(_query),
@@ -155,16 +165,6 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  OutlineInputBorder _genOutLineInputer() {
-    return OutlineInputBorder(
-      borderRadius: const BorderRadius.all(Radius.circular(10)),
-      borderSide: BorderSide(
-        color: Theme.of(context).colorScheme.secondary,
-        width: 1,
       ),
     );
   }
