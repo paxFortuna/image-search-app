@@ -15,7 +15,6 @@ class Photo {
       previewURL: json['previewURL'] as String,
       tags: json['tags'] as String,
     );
-
   }
 
   @override

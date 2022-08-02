@@ -7,7 +7,7 @@ class PhotoStreamApi {
   PhotoStreamApi();
   final _photoStreamController = StreamController<List<Photo>>();
   Stream<List<Photo>> get photoStream
-  => _photoStreamController.stream.asBroadcastStream();
+  => _photoStreamController.stream;
 
   void getStreamImage(String query) async {
     Uri url = Uri.parse(
@@ -25,8 +25,7 @@ class PhotoStreamApi {
 
   Future<List<Photo>> initStream() async{
     Uri url = Uri.parse(
-        'https://pixabay.com/api/?key=26655862-d25160d651ed15b14be08cf35'
-            '/image_type=photo');
+      'https://pixabay.com/api/?key=26655862-d25160d651ed15b14be08cf35&q&q=apple&image_type=photo',);
     http.Response response = await http.get(url);
     print('Response status: ${response.statusCode}');
 
