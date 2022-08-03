@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:image_search_app/screens/screens/image_screen/image_search_screen.dart';
-import 'package:image_search_app/screens/screens/image_stream_screen/image_stream_screen.dart';
 import 'package:image_search_app/screens/screens/video_screen/video_seach_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -34,7 +33,9 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         return const VideoSearchScreen();
       case 2:
-        return const ImageStreamScreen();
+        return const Center(
+          child: Text("Tarot"),
+        );
       case 3:
         return const Center(
           child: Text("Mbti"),

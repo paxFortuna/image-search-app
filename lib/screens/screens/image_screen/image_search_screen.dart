@@ -14,7 +14,6 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   final _photoApi = PhotoApi();
 
   final _controller = TextEditingController();
-  String _query = '';
 
   @override
   void dispose() {
@@ -36,7 +35,7 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
               // 키보드 닫기 이벤트 처리
               FocusManager.instance.primaryFocus?.unfocus();
               setState(() {
-                _query = _controller.text;
+                _photoApi.fetchImage(_controller.text);
                 _controller.clear();
               });
             },
@@ -59,8 +58,9 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   }
 
   Widget _genFutureBuild() {
-    return FutureBuilder<List<Photo>>(
-        future: _photoApi.getImage(_query),
+    return StreamBuilder<List<Photo>>(
+        stream: _photoApi.imageStream,
+        initialData: const [],
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(
@@ -94,7 +94,6 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
             crossAxisSpacing: 10,
           ),
           children: images
-              .where((e) => e.tags.contains(_query))
               .map((Photo image) {
             return SingleChildScrollView(
               child: _genPhotoData(image),
@@ -113,17 +112,19 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
           borderRadius: BorderRadius.circular(20),
           child: Image.network(
             image.previewURL,
-            width: 150,
+            width: MediaQuery.of(context).size.width,
             height: 120,
             fit: BoxFit.cover,
           ),
         ),
         const SizedBox(height: 5),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Text(
-            'ID : ${image.id.toString()}',
-            style: textTheme.bodyText2,
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Text(
+              'ID : ${image.id.toString()}',
+              style: textTheme.bodyText2,
+            ),
           ),
         ),
         Padding(
