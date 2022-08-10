@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:image_search_app/fetch_api/photo_api.dart';
 import 'package:image_search_app/models/photo.dart';
+import 'package:image_search_app/screens/screens/image_screen/image_search_view_model.dart';
 import 'package:image_search_app/theme.dart';
+import 'package:provider/provider.dart';
 
 class ImageSearchApp extends StatefulWidget {
   const ImageSearchApp({Key? key}) : super(key: key);
@@ -11,7 +12,6 @@ class ImageSearchApp extends StatefulWidget {
 }
 
 class _ImageSearchAppState extends State<ImageSearchApp> {
-  final _photoApi = PhotoApi();
 
   final _controller = TextEditingController();
 
@@ -19,6 +19,39 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    final viewModel = context.watch<ImageSearchViewModel>();
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white60,
+        title: const Text(
+          '이미지 검색 앱',
+          style: TextStyle(fontSize: 20, color: Colors.black, letterSpacing: 1),
+        ),
+        centerTitle: true,
+      ),
+      // Column 아래 Padding 위에 Expanded로 감싸면 renderFlex issue 제거됨
+      // LandScape overflow: padding 상하 조절로 issue 제거됨
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 5, 5, 5),
+            child: _genTextField(),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _genFetchImage(),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _genTextField() {
@@ -34,8 +67,9 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
             onTap: () {
               // 키보드 닫기 이벤트 처리
               FocusManager.instance.primaryFocus?.unfocus();
+
               setState(() {
-                _photoApi.fetchImage(_controller.text);
+                viewModel.fetchImage(_controller.text);
                 _controller.clear();
               });
             },
@@ -57,31 +91,9 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
     );
   }
 
-  Widget _genFutureBuild() {
-    return StreamBuilder<List<Photo>>(
-        stream: _photoApi.imageStream,
-        initialData: const [],
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text('에러가 발생했습니다'),
-            );
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData) {
-            return const Center(
-              child: Text('데이터가 없습니다'),
-            );
-          }
-
-          final List<Photo> images = snapshot.data!;
-
-          return _genGridView(images);
-        });
+  Widget _genFetchImage() {
+    final List<Photo> images = viewModel.fetchImage();
+    return _genGridView(images);
   }
 
   Widget _genGridView(List<Photo> images) {
@@ -137,36 +149,6 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
           ),
         ),
       ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white60,
-        title: const Text(
-          '이미지 검색 앱',
-          style: TextStyle(fontSize: 20, color: Colors.black, letterSpacing: 1),
-        ),
-        centerTitle: true,
-      ),
-      // Column 아래 Padding 위에 Expanded로 감싸면 renderFlex issue 제거됨
-      // LandScape overflow: padding 상하 조절로 issue 제거됨
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 5, 5, 5),
-            child: _genTextField(),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _genFutureBuild(),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
