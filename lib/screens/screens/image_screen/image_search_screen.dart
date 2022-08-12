@@ -16,6 +16,18 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   final _controller = TextEditingController();
 
   @override
+  void initState(){
+    super.initState();
+    Future.delayed(Duration.zero, (){
+      // 한번만 읽기 : old code
+      // final viewModel = Provider.of<ImageSearchViewModel>(context, listen: false);
+      // new code : 특정 이벤트에서 단발성으로 수행하는 경우 read 사용
+      final viewModel = context.read<ImageSearchViewModel>();
+      viewModel.fetchImage('');
+    });
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -23,11 +35,10 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
 
   @override
   Widget build(BuildContext context) {
-
+    // read는 단발성 특정 이벤트 처리, read는 지속적인 UI 그릴 때 사용
     final viewModel = context.watch<ImageSearchViewModel>();
     // 필요한 images data를 빼내서 사용하면 파라미터 넘기지 않아도 됨
     // final image = viewModel.images;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white60,
@@ -48,8 +59,10 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              // viewModel의 images를 집어 넣음
-              child: _genGridView(viewModel.images),
+              // _genGridView() viewModel의 images 인자를 집어 넣음
+              child: viewModel.isLoading ?
+              const Center(child: CircularProgressIndicator())
+              : _genGridView(viewModel.images),
             ),
           ),
         ],
