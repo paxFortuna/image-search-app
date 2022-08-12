@@ -25,6 +25,8 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
   Widget build(BuildContext context) {
 
     final viewModel = context.watch<ImageSearchViewModel>();
+    // 필요한 images data를 빼내서 사용하면 파라미터 넘기지 않아도 됨
+    // final image = viewModel.images;
 
     return Scaffold(
       appBar: AppBar(
@@ -41,12 +43,13 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 5, 5, 5),
-            child: _genTextField(),
+            child: _genTextField(viewModel),
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: _genFetchImage(),
+              // viewModel의 images를 집어 넣음
+              child: _genGridView(viewModel.images),
             ),
           ),
         ],
@@ -54,7 +57,7 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
     );
   }
 
-  Widget _genTextField() {
+  Widget _genTextField(ImageSearchViewModel viewModel) {
     return SingleChildScrollView(
       child: TextField(
         controller: _controller,
@@ -91,10 +94,10 @@ class _ImageSearchAppState extends State<ImageSearchApp> {
     );
   }
 
-  Widget _genFetchImage() {
-    final List<Photo> images = viewModel.fetchImage();
-    return _genGridView(images);
-  }
+ // Widget _genFetchImage(List<Photo> images) {
+    // final List<Photo> images = viewModel.fetchImage();
+ //   return _genGridView(images);
+ // }
 
   Widget _genGridView(List<Photo> images) {
     return Center(
